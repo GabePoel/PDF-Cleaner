@@ -1,2 +1,2 @@
 # PDF Cleaner
- Some scripts for pre-processing big ol' book PDFs.
+Some scripts for pre-processing big ol' book PDFs. Experimental and a work in progress. Not tested on anything other than linux. The specs are breifly described in [bookmarks-example](./bookmarks-example) but are subject to change.

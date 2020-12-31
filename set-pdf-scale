@@ -1,0 +1,133 @@
+#!/usr/bin/python3
+#what:Scale PDFs so their covers are the correct size.
+
+import PyPDF2
+import os
+import os.path as path
+import tkinter as tk
+from tkinter import filedialog
+import numpy as np
+import progressbar
+import time
+import unicodedata
+import sys
+import io
+
+def import_list(fp):
+    f = open(fp, 'r')
+    l = f.read().split("\n")
+    l = [line for line in l if len(line) > 0 and line[0] != '#']
+    f.close()
+    return l
+
+def load_file(path=None):
+    if path is None:
+        tk.Tk().withdraw()
+        path = filedialog.askopenfilename()
+    return path
+
+def save_file(path=None):
+    if path is None:
+        tk.Tk().withdraw()
+        path = filedialog.asksaveasfilename(filetypes = (("PDF file", "*.pdf"), ("all files", "*.*")))
+    return path
+
+def fracnorm(scale_check):
+    if scale_check < 1:
+        return 1 / scale_check
+    else:
+        return scale_check
+
+def byteclean(string):
+    old_stdout = sys.stdout
+    sys.stdout = buffer = io.StringIO()
+    val = buffer.getvalue()
+    sys.stdout = old_stdout
+    return val
+
+def set_scale(guide_path=None, in_path=None, out_path=None):
+    home = path.expanduser('~')
+    str_path = load_file(guide_path)
+    pre = import_list(str_path)
+    if pre[0] == 'blank' and in_path is None:
+        in_path = load_file(path.join(home, pre[1]))
+    elif in_path is None:
+        in_path = load_file(path.join(home, pre[0], pre[1]))
+    if out_path is None:
+        out_path = save_file(path.join(home, 'Desktop', pre[1]))
+
+    pdf = PyPDF2.PdfFileReader(in_path, strict=False)
+    out = PyPDF2.PdfFileWriter()
+    num_pages = pdf.getNumPages()
+    sizes = []
+    for i in range(num_pages):
+        boundaries = pdf.pages[i].mediaBox
+        page_width = boundaries[2]
+        page_height = boundaries[3]
+        sizes.append((page_width, page_height))
+    sizes = np.array(sizes)
+    pdf_width = np.median(sizes[...,0])
+    pdf_height = np.median(sizes[...,1])
+    w = float(pdf_width)
+    h = int(np.round(float(pdf_height)))
+    file_name = os.path.basename(in_path)[:-4]
+    name_contents = file_name.split(' - ')
+    author = name_contents[-1]
+    book_title = file_name[:-len(author) - 3]
+    print('\nTitle: ' + str(book_title))
+    print('Authors: ' + str(author))
+    print('\nProcessing Pages')
+    for i in progressbar.progressbar(range(num_pages)):
+        page = pdf.getPage(i)
+        boundaries = page.mediaBox
+        page_width = boundaries[2]
+        page_height = boundaries[3]
+        w0 = float(page_width)
+        h0 = float(page_height)
+        w_scale = w / w0
+        scale_check = fracnorm(1 / w_scale)
+        if scale_check > 1.1:
+            if w0 > h0 and w > h:
+                page.rotateCounterClockwise(90)
+            else:
+                new_width = w
+                new_height = w_scale * h0
+                page.scaleTo(new_width, new_height)
+        out.addPage(pdf.pages[i])
+        time.sleep(0.02)
+
+    bookmarks = pdf.getOutlines()
+
+    print('\nProcessing Bookmarks...')
+    def bookmark_dict(bookmark_list, parent=None, show=False, level=0):
+        result = {}
+        last_parent = parent
+        if level == 0:
+            iterator = progressbar.progressbar(bookmark_list)
+        else:
+            iterator = bookmark_list
+        for item in iterator:
+            if isinstance(item, list):
+                # recursive call
+                result.update(bookmark_dict(item, last_parent, level = level + 1))
+            else:
+                title = item.title
+                num = pdf.getDestinationPageNumber(item)
+                try:
+                    last_parent = out.addBookmark(title, num, parent)
+                except:
+                    title = byteclean(title)
+                    title.join(x for x in title if x.isalpha() or x == ' ')
+                    last_parent = out.addBookmark(title, num, parent)
+        return result
+
+    bookmark_dict(bookmarks, show=True)
+
+    out.addMetadata({
+        "/Title": book_title,
+        "/Authors": author,
+    })
+    out.setPageMode("/UseOutlines")
+
+    with open(out_path, "wb") as out_pdf:
+        out.write(out_pdf)

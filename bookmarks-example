@@ -1,0 +1,197 @@
+# First line is the source folder relative to the home folder
+# Second line is the name of the file relative to whatever the source folder is
+# Write 'blank' in the first line to use default folder
+# Use '*' to not include the number of the chapter
+# Use '!A!' to have the counting be letter based
+# User '~' to shift the page 1 number
+# Lines that begin with '#' are skipped
+Documents/Library/Solid State Books
+The Oxford Solid State Basics - Simon.pdf
+* Cover 1
+* Preface After Teaching this Course 6
+* Preface 7
+* About this Book 8
+* Acknowledgments 9
+* Contents 10
+~ 16
+About Condensed Matter Physics 1
+    What Is Condensed Matter Physics 1
+    Why Do We Study Condensed Matter Physics? 1
+    Why Solid State Physics? 3
+!I! Physics of Solids without Considering Microscopic Structure: The Early Days of Solid State 5
+    !2! Specific Heat of Solids: Boltzmann, Einstein, and Debye 7
+        Einstein's Calculation 8
+        Debye's Calculation 9
+            Periodic (Born-von Karman) Boundary Conditions 10
+            Debye's Calculation Following Planck 11
+            Debye's "Interpolation" 13
+            Some Shortcomings of the Debye Theory 14
+        Appendix to this Chapter: ζ(4) 16
+        * Exercises 17
+    !3! Electrons in Metals: Drude Theory 19
+        Electrons in Fields 20
+            Electrons in an Electric Field 20
+            Electrons in Electric and Magnetic Fields 21
+        Thermal Transport 22
+        * Exercises 25
+    !4! More Electrons in Metals: Sommerfeld (Free Electron) Theory 27
+        Basic Fermi-Dirac Statistics 27
+        Electronic Heat Capacity 29
+        Magnetic Spin Susceptibility (Pauli Paramagnetism) 32
+        Why Drude Theory Works So Well 34
+        Shortcomings of the Free Electron Model 35
+        * Exercises 37
+!II! Structure of Materials 39
+    !5! The Periodic Table 41
+        Chemistry, Atoms, and the Schroedinger Equation 41
+        Structure of the Periodic Table 42
+        Periodic Trends 43
+            Effective Nuclear Charge 45
+        * Exercises 46
+    !6! What Holds Solids Together: Chemical Bonding 49
+        Ionic Bonds 49
+        Covalent Bond 52
+            Particle in a Box Picture 52
+            Molecular Orbital or Tight Binding Theory 53
+        Van der Waals, Fluctuating Dipole Forces, or Molecular Bonding 57
+        Metallic Bonding 59
+        Hydrogen Bonds 59
+        * Exercises 61
+    !7! Types of Matter 65
+!III! Toy Models of Solids in One Dimension 69
+    !8! One-Dimensional Model of Comprehensibility, Sound, and Thermal Expansion 71
+        * Exercises 74
+    !9! Vibrations of a One-Dimensional Monatomic Chain 77
+        First Exposure to the Reciprocal Lattice 79
+        Properties of the Dispersion of the One-Dimensional Chain 80
+        Quantum Modes: Phonons 82
+        Crystal Momentum 84
+        * Exercises 86
+    !10! Vibrations of a One-Dimensional Diatomic Chain 89
+        Diatomic Crystal Structure: Some Useful Definitions 89
+        Normal Modes of the Diatomic Solid 90
+        * Exercises 96
+    !11! Tight Binding Chain (Interlude and Preview) 99
+        Tight Binding Model in One Dimensional 99
+        Solution of the Tight Binding Chain 101
+        Introduction to Electrons Filling Bands 104
+        Multiple Bands 105
+        * Exercises 107
+!IV! Geometry of Solids 111
+    !12! Crystal Structure 113
+        Lattices and Unit Cells 113
+        Lattices in Three Dimensions 117
+            The Body-Centered Cubic (bcc) Lattice 118
+            The Face-Centered Cubic (fcc) Lattice 120
+            Sphere Packing 121
+            Other Lattices in Three Dimensions 122
+            Some Real Crystals 123
+        * Exercises 125
+    !13! Reciprocal Lattice, Brillouin Zone, Waves in Crystals 127
+        The Reciprocal Lattice in Three Dimensions 127
+            Review of One Dimension 127
+            Reciprocal Lattice Definition 128
+            The Reciprocal Lattice as a Fourier Transform 129
+            Reciprocal Lattice Points as Families of Lattice Planes 130
+            Lattice Planes and Miller Indices 132
+        Brillouin Zones 134
+            Review of One-Dimensional Dispersions and Brillouin Zones 134
+            General Brillouin Zone Construction 134
+        Electronic and Vibrational Waves in Crystals in Three Dimensions 136
+        * Exercises 137
+!V! Neutron and X-Ray Diffraction 139
+    !14! Wave Scattering by Crystals 141
+        The Laue and Bragg Conditions 141
+            Fermi's Golden Rule Approach 141
+            Diffraction Approach 142
+            Equivalence of Laue and Bragg Conditions 143
+        Scattering Amplitudes 144
+            Simple Example 146
+            Systematic Absences and More Examples 147
+            Geometric Interpretation of Selection Rules 149
+        Methods of Scattering Experiments 150
+            Advanced Methods 150
+            Powder Diffraction 151
+        Still More About Scattering 156
+            Scattering in Liquids and Amorphous Solids 156
+            Variant: Inelastic Scattering 156
+            Experimental Apparatus 157
+        * Exercises 159
+!VI! Electrons in Solids 161
+    !15! Electrons in a Periodic Potential 163
+        Nearly Free Electron Model 163
+            Degenerate Perturbation Theory 165
+        Bloch's Theorem 169
+        * Exercises 171
+    !16! Insulator, Semiconductor, or Metal 173
+        Energy Bands in One Dimension 173
+        Energy Bands in Two and Three Dimensions 175
+        Tight Binding 177
+        Failures of the Band-Structure Picture of Metals and Insulators 177
+        Band Structure and Optical Properties 179
+            Optical Properties of Insulators and Semiconductors 179
+            Direct and Indirect Transitions 179
+            Optical Properties of Metals 180
+            Optical Effects of Impurities 181
+        * Exercises 182
+    !17! Semiconductor Physics 183
+        Electrons and Holes 183
+            Drude Transport: Redux 186
+        Adding Electrons or Holes with Impurities: Doping 187
+            Impurity States 188
+        Statistical Mechanics of Semiconductors 191
+        * Exercises 195
+    !18! Semiconductor Devices 197
+        Band Structure Engineering 197
+            Designing Band Gaps 197
+            Non-Homogeneous Band Gaps 198
+        p-n Junction 199
+        The Transistor 203
+        * Exercises 205
+!VII! Magnetism and Mean Field Theories 207
+    !19! Magnetic Properties of Atoms: Para- and Dia-Magnetism 209
+        Basic Definitions of Types of Magnetism 209
+        Atomic Physics: Hund's Rules 211
+            Why Moments Align 212
+        Coupling of Electrons in Atoms to an External Field 214
+        Free Spin (Curie or Langevin) Paramagnetism 215
+        Larmor Diamagnetism 217
+        Atoms in Solids 218
+            Pauli Paramgnetism in Metals 219
+            Diamagnetism in Solids 219
+            Curie Paramagnetism in Solids 220
+        * Exercises 222
+    !20! Spontaneous Magnetic Order: Ferro-, Antiferro-, and Ferri-Magnetism 225
+        (Spontaneous) Magnetic Order 226
+            Ferromagnets 226
+            Antiferromagnets 226
+            Ferrimagnets 227
+        Breaking Symmetry 228
+            Ising Model 228
+        * Exercises 229
+    !21! Domains and Hysteresis 233
+        Macroscopic Effects in Ferromagnets: Domains 233
+            Domain Wall Structure and the Bloch/Néel Wall 234
+        Hysteresis in Ferromagnets 236
+            Disorder Pinning 236
+            Single-Domain Crystallites 236
+            Domain Pinning and Hysteresis 238
+        * Exercises 240
+    !22! Mean Field Theory 243
+        Mean Field Equations for the Ferromagnetic Ising Model 243
+        Solution of Self-Consistency Equation 245
+            Paramagnetic Susceptibility 246
+            Further Thoughts 247
+        * Exercises 248
+    !23! Magnetism from Interactions: The Hubbard Model 251
+        Itinerant Ferromagnetism 252
+            Hubbard Ferromagnetism Mean Field Theory 252
+            Stoner Criterion 253
+        Mott Antiferromagnetism 255
+        Appendix: Hubbard Model for the Hydrogen Molecule 257
+        * Exercises 259
+!A! Sample Exam and Solutions 261
+!B! List of Other Good Books 275
+* Indices 279
+    * Index of People 280
+    * Index of Topics 283

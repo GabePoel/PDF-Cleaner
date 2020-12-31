@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+#what:Just a python wrapper for ocrmypdf to be better automated later.
+
+import sys
+from os import system, path, mkdir
+from shutil import copy, rmtree
+
+home = path.expanduser('~')
+src = sys.stdin
+temp_folder = path.join(home, '.quick-ocr-temp-folder')
+in_path = path.join(temp_folder, 'in.pdf')
+out_path = path.join(temp_folder, 'out.pdf')
+if not path.exists(temp_folder):
+    mkdir(temp_folder)
+copy(src, in_path)
+system('ocrmypdf ' + str(in_path) + ' ' + str(out_path))
+copy(out_path, src)
+rmtree(temp_folder)
