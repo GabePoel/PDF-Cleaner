@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+#what:Reload PDF with annotations on it.
+
+from sys import argv
+from os import path, mkdir, system, rename
+from shutil import copy
+
+pdf_name = argv[1]
+dir_name = '.' + path.basename(pdf_name)[:-4]
+core_name = dir_name[1:] + ' - Reference'
+old_ref_name = path.join(dir_name, 'Reference.pdf')
+ref_name = path.join(dir_name, core_name + '.pdf')
+old_xpp_name = path.join(dir_name, 'Reference.xopp')
+old_xpp_name_alt = path.join(dir_name, 'Reference.pdf.xopp')
+xpp_name = path.join(dir_name, core_name + '.xopp')
+xpp_name_alt = path.join(dir_name, core_name + '.pdf.xopp')
+
+if path.exists(old_ref_name):
+    rename(old_ref_name, ref_name)
+if not path.exists(dir_name):
+    mkdir(dir_name)
+if not path.exists(ref_name):
+    copy(pdf_name, ref_name)
+if path.exists(old_xpp_name):
+    rename(old_xpp_name, xpp_name)
+if path.exists(old_xpp_name_alt):
+    rename(old_xpp_name_alt, xpp_name)
+if path.exists(xpp_name_alt):
+    rename(xpp_name_alt, xpp_name)
+
+if path.exists(xpp_name):
+    system('pdf-annotation-sequence "' + pdf_name + '"')
+
+# if not path.exists(xpp_name):
+#     xpp_name = path.join(dir_name, dir_name[1:] + ' - Reference.xopp')
+# if not path.exists(dir_name):
+#     mkdir(dir_name)
+# if not path.exists(ref_name):
+#     copy(pdf_name, ref_name)
+# system('xournalpp "' + xpp_name + '" -p "' + pdf_name + '"')

@@ -1,0 +1,3 @@
+#!/bin/bash
+#what:Combine input file with cover and export to Tomes.
+pdftk Cover.pdf "$1" cat output "/home/gabriel/Insync/gpe@berkeley.edu/Google Drive/Seconcephalon/IMP/Utility Maintenance/Tomes"/"$1"

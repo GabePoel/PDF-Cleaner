@@ -1,0 +1,23 @@
+#!/usr/bin/python3
+
+import sys
+import os
+from shutil import copy
+
+home = os.path.expanduser('~')
+fp = os.path.join(home, 'Desktop', os.path.basename(sys.argv[1]))
+
+copy(sys.argv[1], fp)
+
+target = sys.argv[1]
+cover_width = (os.popen('identify -format "%[w]/72" "' + target + '"[0]').read())
+print(cover_width)
+cover_height = (os.popen('identify -format "%[h]/72" "' + target + '"[0]').read())
+print(cover_height)
+page_width = (os.popen('identify -format "%[h]/72" "' + target + '"[1]').read())
+print(page_width)
+page_height = cover_height * page_width / cover_width
+print(page_height)
+s = 'cpdf -scale-to-fit "' + str(page_width) + ' ' + str(page_height) + '" "' + target + '" -o "' + target + '"'
+print(s)
+os.system('cpdf -scale-to-fit "' + str(page_width) + 'in ' + str(page_height) + 'in" "' + target + '" -o "' + target + '"')

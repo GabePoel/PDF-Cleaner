@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+#what:Export Xournal++ annotations.
+
+from sys import argv
+from os import system
+
+xpp_name = argv[1]
+pdf_name = xpp_name[:-5] + '.pdf'
+system('xournalpp "' + xpp_name + '" -p "' + pdf_name + '"')

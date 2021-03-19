@@ -1,0 +1,142 @@
+#!/usr/bin/python3
+#what:Annotate PDF in Xournal++.
+import sys
+import io
+from sys import argv
+from os import path, mkdir, system, rename, getcwd, remove
+from shutil import copy
+import PyPDF2
+import progressbar
+import unicodedata
+from PyPDF2.generic import NameObject
+from PyPDF2.pdf import PdfFileWriter
+
+pdf_name = path.join(getcwd(), argv[1])
+plane_name = '.' + path.basename(pdf_name)[:-4]
+dir_name = path.join(getcwd(), plane_name)
+core_name = plane_name[1:] + ' - Reference'
+old_ref_name = path.join(dir_name, 'Reference.pdf')
+ref_name = path.join(dir_name, core_name + '.pdf')
+ann_name = path.join(dir_name, plane_name[1:] + ' - Annotations.pdf')
+old_xpp_name = path.join(dir_name, 'Reference.xopp')
+old_xpp_name_alt = path.join(dir_name, 'Reference.pdf.xopp')
+xpp_name = path.join(dir_name, core_name + '.xopp')
+xpp_name_alt = path.join(dir_name, core_name + '.pdf.xopp')
+tmp_name = path.join(dir_name, 'temp.pdf')
+out_name = path.join(dir_name, 'out.pdf')
+
+def byteclean(string):
+    old_stdout = sys.stdout
+    sys.stdout = buffer = io.StringIO()
+    val = buffer.getvalue()
+    sys.stdout = old_stdout
+    return val
+
+def bookmark_dict(reader, writer, bookmark_list=None, parent=None, show=False, level=0):
+    if bookmark_list is None:
+        bookmark_list = reader.getOutlines()
+    result = {}
+    last_parent = parent
+    if level == 0:
+        iterator = progressbar.progressbar(bookmark_list)
+    else:
+        iterator = bookmark_list
+    for item in iterator:
+        if isinstance(item, list):
+            # recursive call
+            result.update(bookmark_dict(reader, writer, item, last_parent, level = level + 1))
+        else:
+            title = item.title
+            num = reader.getDestinationPageNumber(item)
+            try:
+                last_parent = writer.addBookmark(title, num, parent)
+            except:
+                title = byteclean(title)
+                title.join(x for x in title if x.isalpha() or x == ' ')
+                last_parent = writer.addBookmark(title, num, parent)
+    return result
+
+def transfer_annotations(src_name, dst_name):
+    src_PDF = PyPDF2.PdfFileReader(src_name, strict=False)
+    dst_PDF = PyPDF2.PdfFileReader(dst_name, strict=False)
+    out_PDF = PyPDF2.PdfFileWriter()
+    num_pages = src_PDF.getNumPages()
+    for i in range(num_pages):
+        src_Page = src_PDF.getPage(i)
+        dst_Page = dst_PDF.getPage(i)
+        if '/Annots' in src_Page:
+            a = src_Page['/Annots']
+            dst_Page[NameObject('/Annots')] = a
+        out_PDF.addPage(dst_Page)
+    bookmark_dict(src_PDF, out_PDF)
+    out_PDF.setPageMode('/UseOutlines')
+    info = src_PDF.getDocumentInfo()
+    out_PDF.addMetadata(info)
+    with open(out_name, "wb") as out:
+        out_PDF.write(out)
+    remove(dst_name)
+    rename(out_name, dst_name)
+
+def remove_annotations(src_name):
+    src_PDF = PyPDF2.PdfFileReader(src_name, strict=False)
+    out_PDF = PdfFileWriter()
+    num_pages = src_PDF.getNumPages()
+    for i in range(num_pages):
+        out_PDF.addPage(src_PDF.getPage(i))
+    bookmark_dict(src_PDF, out_PDF)
+    out_PDF.setPageMode('/UseOutlines')
+    out_PDF.removeLinks()
+    with open(out_name, "wb") as out:
+        out_PDF.write(out)
+    remove(src_name)
+    rename(out_name, src_name)
+
+if path.exists(old_ref_name):
+    rename(old_ref_name, ref_name)
+if not path.exists(dir_name):
+    mkdir(dir_name)
+if not path.exists(ref_name):
+    copy(pdf_name, ref_name)
+if path.exists(old_xpp_name):
+    rename(old_xpp_name, xpp_name)
+if path.exists(old_xpp_name_alt):
+    rename(old_xpp_name_alt, xpp_name)
+if path.exists(xpp_name_alt):
+    rename(xpp_name_alt, xpp_name)
+
+if not path.exists(ann_name):
+    ann_PDF = PyPDF2.PdfFileWriter()
+    ref_PDF = PyPDF2.PdfFileReader(ref_name, strict=False)
+    num_pages = ref_PDF.getNumPages()
+    for i in range(num_pages):
+        ref_page = ref_PDF.getPage(i)
+        w = ref_page.mediaBox[2]
+        h = ref_page.mediaBox[3]
+        ann_PDF.addBlankPage(width=w, height=h)
+    with open(ann_name, "wb") as out:
+        ann_PDF.write(out)
+
+transfer_annotations(pdf_name, ann_name)
+
+if path.exists(xpp_name):
+    system('xournalpp "' + xpp_name + '" &')
+else:
+    system('xournalpp "' + ref_name + '" &')
+
+script_path = path.join(dir_name, 'auto-export.sh')
+script = '#!/bin/sh\n\n' + \
+    'for pid in $(pidof -x "' + script_path + '"); do \n' + \
+    '    if [ $pid != $$ ]; then\n' + \
+    '        echo "[$(date)] : abc.sh : Process is already running' + \
+    ' with PID $pid"\n' + \
+    '        exit 1\n' + \
+    '    fi\n' + \
+    'done\n\n' +\
+    'pdf-annotation-sequence "' + pdf_name + '"'
+    # 'xournalpp "' + xpp_name + '" -p "' + tmp_name + '"\ncp "' + \
+    # tmp_name + '" "' + pdf_name + '"\nrm "' + tmp_name + '"'
+auto_export = open(script_path,"w")
+auto_export.write(script)
+auto_export.close()
+
+system('echo "' + xpp_name + '" | entr sh "' + script_path + '"')

@@ -1,0 +1,4 @@
+#!/bin/bash
+#what:Resizes pages in pdf to the same size.
+cp "$1" ~/Desktop/"$1"
+cpdf -scale-to-fit "$(identify -format "%[w]" "$1"[0]) $(identify -format "%[h]" "$1"[0])" "$1" -o "$1"
