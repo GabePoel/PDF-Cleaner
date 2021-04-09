@@ -1,11 +1,12 @@
 #!/usr/bin/python3
-#what:Apply bookmarks from pdf-bookmarks file to specified PDF.
+# what:Apply bookmarks from pdf-bookmarks file to specified PDF.
 
 from os import path
 from os import system
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import tkinter as tk
 from tkinter import filedialog
+
 
 def import_list(fp):
     f = open(fp, 'r')
@@ -14,17 +15,21 @@ def import_list(fp):
     f.close()
     return l
 
+
 def load_file(path=None):
     if path is None:
         tk.Tk().withdraw()
         path = filedialog.askopenfilename()
     return path
 
+
 def save_file(path=None):
     if path is None:
         tk.Tk().withdraw()
-        path = filedialog.asksaveasfilename(filetypes = (("PDF file", "*.pdf"), ("all files", "*.*")))
+        path = filedialog.asksaveasfilename(filetypes=(
+            ("PDF file", "*.pdf"), ("all files", "*.*")))
     return path
+
 
 def bookmark(pdf, bookmarks, parent=None, append='', insert=False, offset=0):
     bms = []
@@ -38,18 +43,26 @@ def bookmark(pdf, bookmarks, parent=None, append='', insert=False, offset=0):
         n += 1
     return bms
 
+
 def check_level(line):
     if line[:4] == '    ':
         return 1 + check_level(line[4:])
     else:
         return 0
 
-def set_parents(to_process, level=0, parent=None, counter=0, offset=0, line_counter=0):
+
+def set_parents(
+        to_process,
+        level=0,
+        parent=None,
+        counter=0,
+        offset=0,
+        line_counter=0):
     processed = []
     # print(processed)
     try:
         to_process.remove('')
-    except:
+    except BaseException:
         pass
     while len(to_process) > 0:
         line = to_process[0]
@@ -86,12 +99,14 @@ def set_parents(to_process, level=0, parent=None, counter=0, offset=0, line_coun
                 processed.append(p)
                 to_process = to_process[1:]
             elif check_level(line) > level:
-                to_process, newly_processed, num_lines, offset = set_parents(to_process, level=level+1, parent=processed[-1], counter=0, offset=offset, line_counter=line_counter - 1)
+                to_process, newly_processed, num_lines, offset = set_parents(
+                    to_process, level=level + 1, parent=processed[-1], counter=0, offset=offset, line_counter=line_counter - 1)
                 processed = processed + newly_processed
                 line_counter += (num_lines - line_counter - 1)
             else:
                 return to_process, processed, line_counter, offset
     return to_process, processed, line_counter, offset
+
 
 def assign_bookmarks(pdf, processed):
     bookmarks = []
@@ -100,13 +115,14 @@ def assign_bookmarks(pdf, processed):
         # print(bookmarks)
         # print(p)
         parent = p[4]
-        if not parent is None:
+        if parent is not None:
             parent = bookmarks[parent[3]]
         prefix = p[0]
         if len(prefix) > 0:
             prefix += ' - '
         bookmarks.append(pdf.addBookmark(prefix + p[1], p[2], parent))
     return bookmarks
+
 
 def set_bookmarks(guide_path=None, in_path=None, out_path=None):
     home = path.expanduser('~')
@@ -121,7 +137,7 @@ def set_bookmarks(guide_path=None, in_path=None, out_path=None):
     pre = pre[2:]
     try:
         pre.remove('', 999)
-    except:
+    except BaseException:
         pass
     # out_path = in_path
     in_pdf = PdfFileReader(open(in_path, 'rb'))

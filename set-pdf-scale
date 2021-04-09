@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#what:Scale PDFs so their covers are the correct size.
+# what:Scale PDFs so their covers are the correct size.
 
 import PyPDF2
 import os
@@ -13,6 +13,7 @@ import unicodedata
 import sys
 import io
 
+
 def import_list(fp):
     f = open(fp, 'r')
     l = f.read().split("\n")
@@ -20,17 +21,21 @@ def import_list(fp):
     f.close()
     return l
 
+
 def load_file(path=None):
     if path is None:
         tk.Tk().withdraw()
         path = filedialog.askopenfilename()
     return path
 
+
 def save_file(path=None):
     if path is None:
         tk.Tk().withdraw()
-        path = filedialog.asksaveasfilename(filetypes = (("PDF file", "*.pdf"), ("all files", "*.*")))
+        path = filedialog.asksaveasfilename(filetypes=(
+            ("PDF file", "*.pdf"), ("all files", "*.*")))
     return path
+
 
 def fracnorm(scale_check):
     if scale_check < 1:
@@ -38,12 +43,14 @@ def fracnorm(scale_check):
     else:
         return scale_check
 
+
 def byteclean(string):
     old_stdout = sys.stdout
     sys.stdout = buffer = io.StringIO()
     val = buffer.getvalue()
     sys.stdout = old_stdout
     return val
+
 
 def set_scale(guide_path=None, in_path=None, out_path=None):
     home = path.expanduser('~')
@@ -66,8 +73,8 @@ def set_scale(guide_path=None, in_path=None, out_path=None):
         page_height = boundaries[3]
         sizes.append((page_width, page_height))
     sizes = np.array(sizes)
-    pdf_width = np.median(sizes[...,0])
-    pdf_height = np.median(sizes[...,1])
+    pdf_width = np.median(sizes[..., 0])
+    pdf_height = np.median(sizes[..., 1])
     w = float(pdf_width)
     h = int(np.round(float(pdf_height)))
     file_name = os.path.basename(in_path)[:-4]
@@ -99,6 +106,7 @@ def set_scale(guide_path=None, in_path=None, out_path=None):
     bookmarks = pdf.getOutlines()
 
     print('\nProcessing Bookmarks...')
+
     def bookmark_dict(bookmark_list, parent=None, show=False, level=0):
         result = {}
         last_parent = parent
@@ -109,13 +117,17 @@ def set_scale(guide_path=None, in_path=None, out_path=None):
         for item in iterator:
             if isinstance(item, list):
                 # recursive call
-                result.update(bookmark_dict(item, last_parent, level = level + 1))
+                result.update(
+                    bookmark_dict(
+                        item,
+                        last_parent,
+                        level=level + 1))
             else:
                 title = item.title
                 num = pdf.getDestinationPageNumber(item)
                 try:
                     last_parent = out.addBookmark(title, num, parent)
-                except:
+                except BaseException:
                     title = byteclean(title)
                     title.join(x for x in title if x.isalpha() or x == ' ')
                     last_parent = out.addBookmark(title, num, parent)

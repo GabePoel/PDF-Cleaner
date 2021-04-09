@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#what:Just a python wrapper for ocrmypdf to be better automated later.
+# what:Just a python wrapper for ocrmypdf to be better automated later.
 
 import sys
 from os import system, path, mkdir

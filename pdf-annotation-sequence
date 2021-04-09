@@ -25,6 +25,7 @@ xpp_name_alt = path.join(dir_name, core_name + '.pdf.xopp')
 tmp_name = path.join(dir_name, 'temp.pdf')
 out_name = path.join(dir_name, 'out.pdf')
 
+
 def byteclean(string):
     old_stdout = sys.stdout
     sys.stdout = buffer = io.StringIO()
@@ -32,7 +33,14 @@ def byteclean(string):
     sys.stdout = old_stdout
     return val
 
-def bookmark_dict(reader, writer, bookmark_list=None, parent=None, show=False, level=0):
+
+def bookmark_dict(
+        reader,
+        writer,
+        bookmark_list=None,
+        parent=None,
+        show=False,
+        level=0):
     if bookmark_list is None:
         bookmark_list = reader.getOutlines()
     result = {}
@@ -44,17 +52,25 @@ def bookmark_dict(reader, writer, bookmark_list=None, parent=None, show=False, l
     for item in iterator:
         if isinstance(item, list):
             # recursive call
-            result.update(bookmark_dict(reader, writer, item, last_parent, level = level + 1))
+            result.update(
+                bookmark_dict(
+                    reader,
+                    writer,
+                    item,
+                    last_parent,
+                    level=level +
+                    1))
         else:
             title = item.title
             num = reader.getDestinationPageNumber(item)
             try:
                 last_parent = writer.addBookmark(title, num, parent)
-            except:
+            except BaseException:
                 title = byteclean(title)
                 title.join(x for x in title if x.isalpha() or x == ' ')
                 last_parent = writer.addBookmark(title, num, parent)
     return result
+
 
 def transfer_annotations(src_name, dst_name):
     src_PDF = PyPDF2.PdfFileReader(src_name, strict=False)
@@ -77,6 +93,7 @@ def transfer_annotations(src_name, dst_name):
     remove(dst_name)
     rename(out_name, dst_name)
 
+
 def remove_annotations(src_name):
     src_PDF = PyPDF2.PdfFileReader(src_name, strict=False)
     out_PDF = PdfFileWriter()
@@ -90,6 +107,7 @@ def remove_annotations(src_name):
         out_PDF.write(out)
     remove(src_name)
     rename(out_name, src_name)
+
 
 # Remove all annotations from ref
 remove_annotations(ref_name)
